@@ -21,7 +21,7 @@ try:
 
     cursor.execute("""
         CREATE TABLE theater (
-        loc_ID varchar(5) NOT NULL PRIMARY KEY,
+        loc_ID varchar(5) NOT NULL,
         location varchar(20) NOT NULL,
         num_screens int(2) NOT NULL,
         concessions_type ENUM('Basic', 'Full', 'Restaurant'),
