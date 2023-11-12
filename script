@@ -23,7 +23,7 @@ try:
         loc_ID varchar(5) NOT NULL PRIMARY KEY,
         location varchar(20) NOT NULL,
         num_screens int(2) NOT NULL,
-        con_type ENUM('Basic', 'Full', 'Restaurant')
+        con_type varchar(10)
         )   
     """)
     con.commit()
@@ -41,7 +41,7 @@ try:
 
     cursor.execute("""
         CREATE TABLE concessions(
-        con_type ENUM('Basic', 'Full', 'Restaurant'),
+        con_type varchar(10)
         item varchar(50) PRIMARY KEY,
         price decimal(2,2) NOT NULL,
         FOREIGN KEY (con_type) REFERENCES theater (con_type)
