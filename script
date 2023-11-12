@@ -41,10 +41,9 @@ try:
 
     cursor.execute("""
         CREATE TABLE concessions(
-        con_type varchar(10)
+        con_type varchar(10),
         item varchar(50) PRIMARY KEY,
-        price decimal(2,2) NOT NULL,
-        FOREIGN KEY (con_type) REFERENCES theater (con_type)
+        price decimal(4,2) NOT NULL,
         )
     """)
     con.commit()
@@ -62,7 +61,7 @@ try:
     cursor.execute("""
         CREATE TABLE payroll(
         emp_ID varchar(5) NOT NULL PRIMARY KEY,
-        salary deciaml(2,2) NOT NULL DEFAULT(10.00)
+        salary decimal(4,2) NOT NULL DEFAULT(10.00)
         SSN varchar(9) NOT NULL,
         acct_num varchar(13),
         routing_num varchar(13),
@@ -88,7 +87,7 @@ try:
     cursor.execute("""
         CREATE TABLE movies(
         now_showing boolean NOT NULL,
-        showing_id varchar(4) NOT NULL PRIMARY KEY,
+        showing_ID varchar(4) NOT NULL PRIMARY KEY,
         title varchar(50) NOT NULL,
         time_slot_ID varchar(4) NOT NULL,
         location varchar(20) NOT NULL,
@@ -103,6 +102,16 @@ try:
         )            
     """)
     con.commit()
+
+    cursor.excute("""
+        CREATE TABLE training(
+        emp_ID varchar(5) PRIMARY KEY,
+        con_training boolean,
+        tix_training boolean,
+        man_training boolean,
+        FOREGIN KEY (emp_ID) REFERENCES employee (emp_ID)
+        )
+    """)
 
     cursor.close()
 
