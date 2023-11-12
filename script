@@ -73,7 +73,7 @@ try:
 
     cursor.execute("""
         CREATE TABLE screens(
-        screen_ID varchar(4) NOT NULL PRIMARY KEY,
+        screen_ID varchar(4) PRIMARY KEY,
         loc_ID varchar(5) NOT NULL,
         screen_num varchar(2) NOT NULL,
         seat_type varchar(10),
@@ -87,17 +87,17 @@ try:
     cursor.execute("""
         CREATE TABLE movies(
         now_showing boolean NOT NULL,
-        showing_ID varchar(4) NOT NULL PRIMARY KEY,
+        showing_ID varchar(4) PRIMARY KEY,
         title varchar(50) NOT NULL,
         time_slot_ID varchar(4) NOT NULL,
-        location varchar(20) NOT NULL,
+        loc_ID varchar(5) NOT NULL,
         screen_ID varchar(4) NOT NULL,
         start_date decimal(2,0) NOT NULL,
         start_month decimal(2,0) NOT NULL,
         end_date decimal(2,0) NOT NULL,
         end_month decimal(2,0) NOT NULL,
         FOREIGN KEY (time_slot_ID) REFERENCES time_slot (slot_ID),
-        FOREIGN KEY (location) REFERENCES theater (location),
+        FOREIGN KEY (loc_ID) REFERENCES theater (loc_ID),
         FOREIGN KEY (screen_ID) REFERENCES screens (screen_ID)
         )            
     """)
