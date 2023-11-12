@@ -27,7 +27,7 @@ try:
         concessions_type ENUM('Basic', 'Full', 'Restaurant'),
         PRIMARY KEY loc_ID
         )    """)
-    cursor.commit()
+    con.commit()
 
     cursor.execute("""
         CREATE TABLE employees(
@@ -36,10 +36,10 @@ try:
         role varchar(10),
         name varchar(50) NOT NULL,
         PRIMARY KEY emp_ID,
-        FOREIGN KEY loc_ID REFERENCES theater.loc_ID
+        FOREIGN KEY (loc_ID) REFERENCES theater (loc_ID)
         )
     """)
-    cursor.commit()
+    con.commit()
 
     cursor.execute("""
         CREATE TABLE concessions(
@@ -47,10 +47,10 @@ try:
         item varchar(50),
         price deciamal(2,2) NOT NULL,
         PRIMARY KEY item,
-        FOREIGN KEY type REFERENCES theather.concessions_type
+        FOREIGN KEY (type) REFERENCES theather (concessions_type)
         )
     """)
-    cursor.commit()
+    con.commit()
 
     cursor.execute("""
         CREATE TABLE time_slot(
@@ -61,7 +61,7 @@ try:
         PRIMARY KEY slot_ID
         )
     """)
-    cursor.commit()
+    con.commit()
 
     cursor.execute("""
         CREATE TABLE payroll(
@@ -72,10 +72,10 @@ try:
         routing_num varchar(13),
         address varchar(50),
         PRIMARY KEY emp_ID,
-        FOREIGN KEY emp_ID REFERENCES employee.emp_ID
+        FOREIGN KEY (emp_ID) REFERENCES employee (emp_ID)
         )               
     """)
-    cursor.commit()
+    con.commit()
 
     cursor.execute("""
         CREATE TABLE screens(
@@ -86,10 +86,10 @@ try:
         screen_type ENUM('Regular', 'Real3D', 'IMAX') DEFAULT:'Regular',
         capacity deciaml(3,0) NOT NULL,
         PRIMARY KEY screen_ID,
-        FOREIGN KEY loc_ID REFERENCES theater.loc_ID
+        FOREIGN KEY (loc_ID) REFERENCES theater (loc_ID)
        )            
     """)
-    cursor.commit()
+    con.commit()
 
     cursor.execute("""
         CREATE TABLE movies(
@@ -104,12 +104,12 @@ try:
         end_date decimal(2,0) NOT NULL,
         end_month decimal(2,0) NOT NULL,
         PRIMARY KEY showing_ID,
-        FOREIGN KEY time_slot_ID REFERENCES time_slot.slot_ID,
-        FOREIGN KEY location REFERENCES theater.location,
-        FOREIGN KEY screen_ID REFERENCES screens.screen_ID
+        FOREIGN KEY (time_slot_ID) REFERENCES time_slot (slot_ID)
+        FOREIGN KEY (location) REFERENCES theater (location),
+        FOREIGN KEY (screen_ID) REFERENCES screens (screen_ID)
         )            
     """)
-    cursor.commit()
+    con.commit()
 
     cursor.close()
 
