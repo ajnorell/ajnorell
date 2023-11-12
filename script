@@ -43,7 +43,7 @@ try:
         CREATE TABLE concessions(
         con_type varchar(10),
         item varchar(50) PRIMARY KEY,
-        price decimal(4,2) NOT NULL,
+        price decimal(4,2) NOT NULL
         )
     """)
     con.commit()
@@ -52,8 +52,8 @@ try:
         CREATE TABLE time_slot(
         slot_ID varchar(4) PRIMARY KEY,
         day varchar(1),
-        start_hr(2,0),
-        start_min(2,0),
+        start_hr decimal(2,0),
+        start_min decimal(2,0)
         )
     """)
     con.commit()
