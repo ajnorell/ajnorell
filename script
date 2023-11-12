@@ -1,13 +1,12 @@
 #SAT3210
-#Lab06
-#Section 5
+#Course Project
+#Table Creation Script
 #ajnorell
 #Mariadb
 #
 #
 import mariadb
 import sys
-from prettytable import PrettyTable
 
 try:
     con = mariadb.connect(
@@ -15,149 +14,103 @@ try:
         password="P@ssw0rd",
         host="localhost",
         port=3306,
-        database="school"
+        database="" #TODO
     )
     
     cursor = con.cursor()
 
-    def menu():
-        global sel
-        print("1: Select Duplicates\n2: Select Duplicates From Department\n3: Search Students and Delete")
-        sel = input("Select from the above menu(1-5):")
+    cursor.execute("""
+        CREATE TABLE theater(
+        loc_ID varchar(5) NOT NULL,
+        location varchar(20) NOT NULL,
+        num_screens int(2) NOT NULL,
+        concessions_type ENUM('Basic', 'Full', 'Restaurant'),
+        PRIMARY KEY loc_ID
+    )
+    """)
+    cursor.commit()
 
-    def dups():
+    cursor.execute("""
+        CREATE TABLE employees(
+        emp_ID varchar(5),
+        loc_ID varchar(5),
+        role varchar(10),
+        name varchar(50) NOT NULL,
+        PRIMARY KEY emp_ID,
+        FOREIGN KEY loc_ID REFERENCES theater.loc_ID
+        )
+    """)
+    cursor.commit()
 
-        usr = input("What Number of users who have the matching name want to see?:")
-        
-        cursor.execute("""
-            SELECT name, ID
-            FROM student
-            WHERE name
-            IN(
-            SELECT name
-            FROM student
-            GROUP BY name
-            HAVING count(*) = ?
-            )
-            ORDER BY name
-            """,(usr))
-        
-        if cursor.rowcount == 0:
-            print("No results from Query")
-        else:
-            rows = cursor.fetchall()
-            table = PrettyTable(["Name", "ID"])
-            for i in rows:
-                table.add_row(i)
-            print(table)
-    
-    def dept_dups():
+    cursor.execute("""
+        CREATE TABLE concessions(
+        type ENUM('Basic', 'Full', 'Restaurant'),
+        item varchar(50),
+        price deciamal(2,2) NOT NULL,
+        PRIMARY KEY item,
+        FOREIGN KEY type REFERENCES theather.concessions_type
+        )
+    """)
+    cursor.commit()
 
-        usr = input("What Number of users who have the matching name want to see?:")
-        usr2 = input("From what department?:")
+    cursor.execute("""
+        CREATE TABLE time_slot(
+        slot_ID varchar(4),
+        day varchar(1),
+        start_hr(2,0),
+        start_min(2,0),
+        PRIMARY KEY slot_ID
+        )
+    """)
+    cursor.commit()
 
-        cursor.execute("""
-            SELECT name, ID, dept_name
-            FROM student
-            WHERE dept_name = ?
-            AND name IN(
-            SELECT name, dept_name
-            FROM student
-            WHERE dept_name = ?
-            GROUP BY name
-            HAVING count(*) = ?
-            )
-            ORDER BY name
-            """,(usr2, usr2, usr))
-        
-        if cursor.rowcount == 0:
-            print("No results from Query")
+    cursor.execute("""
+        CREATE TABLE payroll(
+        emp_ID varchar(5) NOT NULL,
+        salary deciaml(2,2) NOT NULL DEFAULT(10.00)
+        SSN varchar(9) NOT NULL,
+        acct_num varchar(13),
+        routing_num varchar(13),
+        address varchar(50),
+        PRIMARY KEY emp_ID,
+        FOREIGN KEY emp_ID REFERENCES employee.emp_ID
+        )               
+    """)
+    cursor.commit()
 
-        else:
-            rows = cursor.fetchall()
-            table = PrettyTable(["Name", "ID", "Department"])
-            for i in rows:
-                table.add_row(i)
+    cursor.execute("""
+        CREATE TABLE screens(
+        screen_ID varchar(4) NOT NULL,
+        loc_ID varchar(5) NOT NULL,
+        screen_num varchar(2) NOT NULL,
+        seat_type ENUM('Regular', 'Expanded', 'Recliner') DEFAULT:'Regular',
+        screen_type ENUM('Regular', 'Real3D', 'IMAX') DEFAULT:'Regular',
+        capacity deciaml(3,0) NOT NULL,
+        PRIMARY KEY screen_ID,
+        FOREIGN KEY loc_ID REFERENCES theater.loc_ID
+       )            
+    """)
+    cursor.commit()
 
-            print(table)
-    
-    
-    def lookup_stu():
-
-        usr = input("What Number of users who have the matching name want to see?:")
-        usr2 = input("From what department?:")
-
-        cursor.execute("""
-            SELECT name, ID, dept_name
-            FROM student
-            WHERE dept_name = ?
-            AND name IN(
-            SELECT name, dept_name
-            FROM student
-            WHERE dept_name = ?
-            GROUP BY name
-            HAVING count(*) = ?
-            )
-            ORDER BY name
-            """,(usr2, usr2, usr))
-        
-        if cursor.rowcount == 0:
-            print("No results from Query")
-
-        else:
-            rows = cursor.fetchall()
-            table = PrettyTable(["Name", "ID", "Department"])
-            for i in rows:
-                table.add_row(i)
-
-            print(table)
-            usr3 = input("Would you like to Delete a student?(yes/no):")
-            
-            if usr == "yes":
-                usr = input("Enter the ID number of the student to delete:")
-                cursor.execute("""
-                    DELETE FROM student WHERE ID = ?
-                    """,(usr3))
-                con.commit()
-                cursor.execute("""
-                    SELECT name, ID, dept_name
-                    FROM student
-                    WHERE dept_name = ?
-                    AND name IN(
-                    SELECT name, dept_name
-                    FROM student
-                    WHERE dept_name = ?
-                    GROUP BY name
-                    HAVING count(*) = ?
-                    )
-                    ORDER BY name
-                    """,(usr2, usr2, usr))
-        
-                if cursor.rowcount == 0:
-                    print("No results from Query")
-
-                else:
-                    rows = cursor.fetchall()
-                    table = PrettyTable(["Name", "ID", "Department"])
-                    for i in rows:
-                        table.add_row(i)
-                    print(table)
-                
-    menu()
-    
-    match sel:
-        case "1":
-            dups()
-
-        case "2":
-            dept_dups()
-
-        case "3":
-            lookup_stu()
-
-        case _:
-            print("Option not allowed. Please try again")
-            menu()
+    cursor.execute("""
+        CREATE TABLE movies(
+        now_showing boolean NOT NULL,
+        showing_id varchar(4) NOT NULL,
+        title varchar(50) NOT NULL,
+        time_slot_ID varchar(4) NOT NULL,
+        location varchar(20) NOT NULL,
+        screen_ID varchar(4) NOT NULL,
+        start_date deciaml(2,0) NOT NULL,
+        start_month deciaml(2,0) NOT NULL,
+        end_date decimal(2,0) NOT NULL,
+        end_month decimal(2,0) NOT NULL,
+        PRIMARY KEY showing_ID,
+        FOREIGN KEY time_slot_ID REFERENCES time_slot.slot_ID,
+        FOREIGN KEY location REFERENCES theater.location,
+        FOREIGN KEY screen_ID REFERENCES screens.screen_ID
+        )            
+    """)
+    cursor.commit()
 
     cursor.close()
 
