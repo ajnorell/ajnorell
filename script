@@ -14,20 +14,19 @@ try:
         password="P@ssw0rd",
         host="localhost",
         port=3306,
-        database="" #TODO
+        database="test2" #TODO
     )
     
     cursor = con.cursor()
 
     cursor.execute("""
-        CREATE TABLE theater(
-        loc_ID varchar(5) NOT NULL,
+        CREATE TABLE theater (
+        loc_ID varchar(5) NOT NULL PRIMARY KEY,
         location varchar(20) NOT NULL,
         num_screens int(2) NOT NULL,
         concessions_type ENUM('Basic', 'Full', 'Restaurant'),
         PRIMARY KEY loc_ID
-    )
-    """)
+        )    """)
     cursor.commit()
 
     cursor.execute("""
