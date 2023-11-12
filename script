@@ -60,13 +60,13 @@ try:
 
     cursor.execute("""
         CREATE TABLE payroll(
-        emp_ID varchar(5) NOT NULL PRIMARY KEY,
-        salary decimal(4,2) NOT NULL DEFAULT(10.00)
+        emp_ID varchar(5) PRIMARY KEY,
+        salary decimal(4,2) NOT NULL DEFAULT(10.00),
         SSN varchar(9) NOT NULL,
         acct_num varchar(13),
         routing_num varchar(13),
         address varchar(50),
-        FOREIGN KEY (emp_ID) REFERENCES employee (emp_ID)
+        FOREIGN KEY (emp_ID) REFERENCES employees (emp_ID)
         )               
     """)
     con.commit()
@@ -76,8 +76,8 @@ try:
         screen_ID varchar(4) NOT NULL PRIMARY KEY,
         loc_ID varchar(5) NOT NULL,
         screen_num varchar(2) NOT NULL,
-        seat_type ENUM('Regular', 'Expanded', 'Recliner') DEFAULT:'Regular',
-        screen_type ENUM('Regular', 'Real3D', 'IMAX') DEFAULT:'Regular',
+        seat_type varchar(10),
+        screen_type varchar(10),
         capacity deciaml(3,0) NOT NULL,
         FOREIGN KEY (loc_ID) REFERENCES theater (loc_ID)
        )            
