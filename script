@@ -3,8 +3,7 @@
 #Table Creation Script
 #ajnorell
 #Mariadb
-#
-#
+
 import mariadb
 import sys
 
@@ -14,28 +13,28 @@ try:
         password="P@ssw0rd",
         host="localhost",
         port=3306,
-        database="test2" #TODO
+        database="test2"
     )
     
     cursor = con.cursor()
 
     cursor.execute("""
         CREATE TABLE theater (
-        loc_ID varchar(5) NOT NULL,
+        loc_ID varchar(5) NOT NULL PRIMARY KEY,
         location varchar(20) NOT NULL,
         num_screens int(2) NOT NULL,
         concessions_type ENUM('Basic', 'Full', 'Restaurant'),
-        PRIMARY KEY loc_ID
-        )    """)
+
+        )   
+    """)
     con.commit()
 
     cursor.execute("""
         CREATE TABLE employees(
-        emp_ID varchar(5),
+        emp_ID varchar(5) PRIMARY KEY,
         loc_ID varchar(5),
         role varchar(10),
         name varchar(50) NOT NULL,
-        PRIMARY KEY emp_ID,
         FOREIGN KEY (loc_ID) REFERENCES theater (loc_ID)
         )
     """)
@@ -44,9 +43,8 @@ try:
     cursor.execute("""
         CREATE TABLE concessions(
         type ENUM('Basic', 'Full', 'Restaurant'),
-        item varchar(50),
+        item varchar(50) PRIMARY KEY,
         price deciamal(2,2) NOT NULL,
-        PRIMARY KEY item,
         FOREIGN KEY (type) REFERENCES theather (concessions_type)
         )
     """)
@@ -54,24 +52,22 @@ try:
 
     cursor.execute("""
         CREATE TABLE time_slot(
-        slot_ID varchar(4),
+        slot_ID varchar(4) PRIMARY KEY,
         day varchar(1),
         start_hr(2,0),
         start_min(2,0),
-        PRIMARY KEY slot_ID
         )
     """)
     con.commit()
 
     cursor.execute("""
         CREATE TABLE payroll(
-        emp_ID varchar(5) NOT NULL,
+        emp_ID varchar(5) NOT NULL PRIMARY KEY,
         salary deciaml(2,2) NOT NULL DEFAULT(10.00)
         SSN varchar(9) NOT NULL,
         acct_num varchar(13),
         routing_num varchar(13),
         address varchar(50),
-        PRIMARY KEY emp_ID,
         FOREIGN KEY (emp_ID) REFERENCES employee (emp_ID)
         )               
     """)
@@ -79,13 +75,12 @@ try:
 
     cursor.execute("""
         CREATE TABLE screens(
-        screen_ID varchar(4) NOT NULL,
+        screen_ID varchar(4) NOT NULL PRIMARY KEY,
         loc_ID varchar(5) NOT NULL,
         screen_num varchar(2) NOT NULL,
         seat_type ENUM('Regular', 'Expanded', 'Recliner') DEFAULT:'Regular',
         screen_type ENUM('Regular', 'Real3D', 'IMAX') DEFAULT:'Regular',
         capacity deciaml(3,0) NOT NULL,
-        PRIMARY KEY screen_ID,
         FOREIGN KEY (loc_ID) REFERENCES theater (loc_ID)
        )            
     """)
@@ -94,7 +89,7 @@ try:
     cursor.execute("""
         CREATE TABLE movies(
         now_showing boolean NOT NULL,
-        showing_id varchar(4) NOT NULL,
+        showing_id varchar(4) NOT NULL PRIMARY KEY,
         title varchar(50) NOT NULL,
         time_slot_ID varchar(4) NOT NULL,
         location varchar(20) NOT NULL,
@@ -103,7 +98,6 @@ try:
         start_month deciaml(2,0) NOT NULL,
         end_date decimal(2,0) NOT NULL,
         end_month decimal(2,0) NOT NULL,
-        PRIMARY KEY showing_ID,
         FOREIGN KEY (time_slot_ID) REFERENCES time_slot (slot_ID)
         FOREIGN KEY (location) REFERENCES theater (location),
         FOREIGN KEY (screen_ID) REFERENCES screens (screen_ID)
