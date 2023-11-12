@@ -78,7 +78,7 @@ try:
         screen_num varchar(2) NOT NULL,
         seat_type varchar(10),
         screen_type varchar(10),
-        capacity deciaml(3,0) NOT NULL,
+        capacity decimal(3,0) NOT NULL,
         FOREIGN KEY (loc_ID) REFERENCES theater (loc_ID)
        )            
     """)
@@ -92,8 +92,8 @@ try:
         time_slot_ID varchar(4) NOT NULL,
         location varchar(20) NOT NULL,
         screen_ID varchar(4) NOT NULL,
-        start_date deciaml(2,0) NOT NULL,
-        start_month deciaml(2,0) NOT NULL,
+        start_date decimal(2,0) NOT NULL,
+        start_month decimal(2,0) NOT NULL,
         end_date decimal(2,0) NOT NULL,
         end_month decimal(2,0) NOT NULL,
         FOREIGN KEY (time_slot_ID) REFERENCES time_slot (slot_ID)
